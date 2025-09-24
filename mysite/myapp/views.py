@@ -45,7 +45,30 @@ class CreateExpense(CreateView, LoginRequiredMixin):
     success_url = reverse_lazy('list-recent')
 
     def form_valid(self, form):
-        form.instance.user = self.request.user  # attach logged-in user
+        # Get the transaction data before saving
+        transaction_type = form.cleaned_data.get('transaction_type')
+        amount = form.cleaned_data.get('amount')
+
+        # Calculate current bank balance
+        if transaction_type in ['Withdrawal', 'Transfer']:
+            # Get all expenses for the user
+            user_expenses = Expense.objects.filter(user=self.request.user)
+
+            # Calculate current balance
+            balance = 0
+            for expense in user_expenses:
+                if expense.transaction_type == 'Credit':
+                    balance += expense.amount
+                elif expense.transaction_type in ['Withdrawal', 'Transfer', 'Expense']:
+                    balance -= expense.amount
+
+            # Check if withdrawal/transfer exceeds balance
+            if amount > balance:
+                form.add_error('amount', f'Insufficient funds. Current balance: ₦{balance:,.2f}')
+                return self.form_invalid(form)
+
+        # If validation passes, save the expense
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
 
