@@ -1,5 +1,6 @@
 import os
 import dj_database_url
+from pathlib import Path
 
 """
 Django settings for mysite project.
@@ -131,20 +132,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Railway deployment settings
 if 'RAILWAY_STATIC_URL' in os.environ:
     DEBUG = False
-    ALLOWED_HOSTS = ['*']  # Allow all hosts for now
+    ALLOWED_HOSTS = ['*']
 
-    # Static files with WhiteNoise
+    # Static files
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATIC_URL = '/static/'
 
-    # Database configuration for Railway PostgreSQL
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+    # Database configuration with try-except
+    try:
+        import dj_database_url
+
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=os.environ.get('DATABASE_URL'),
+                conn_max_age=600,
+                ssl_require=True
+            )
+        }
+    except ImportError:
+        # Fallback for local development
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
     # Security settings for production
     CSRF_TRUSTED_ORIGINS = [
