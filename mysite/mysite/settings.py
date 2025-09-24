@@ -1,5 +1,5 @@
 import os
-import dj_database_url
+# import dj_database_url
 from pathlib import Path
 
 """
@@ -129,7 +129,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Railway deployment settings
+# Railway production settings
 if 'RAILWAY_STATIC_URL' in os.environ:
     DEBUG = False
     ALLOWED_HOSTS = ['*']
@@ -138,28 +138,14 @@ if 'RAILWAY_STATIC_URL' in os.environ:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATIC_URL = '/static/'
 
-    # Database configuration with try-except
-    try:
-        import dj_database_url
-
-        DATABASES = {
-            'default': dj_database_url.config(
-                default=os.environ.get('DATABASE_URL'),
-                conn_max_age=600,
-                ssl_require=True
-            )
+    # SIMPLE Database configuration - no external dependencies needed
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PGDATABASE'),
+            'USER': os.environ.get('PGUSER'),
+            'PASSWORD': os.environ.get('PGPASSWORD'),
+            'HOST': os.environ.get('PGHOST'),
+            'PORT': os.environ.get('PGPORT'),
         }
-    except ImportError:
-        # Fallback for local development
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-
-    # Security settings for production
-    CSRF_TRUSTED_ORIGINS = [
-        'https://*.railway.app',
-        'https://*.yourdomain.com'  # Replace with your actual domain later
-    ]
+    }
