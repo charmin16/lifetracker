@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LifeTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --finance-color: #4361ee;
+            --vision-color: #7209b7;
+            --gradient-start: #4361ee;
+            --gradient-end: #3a0ca3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 30px;
+        }
+
+        .logo {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .finance-card:hover {
+            border-color: var(--finance-color);
+        }
+
+        .vision-card:hover {
+            border-color: var(--vision-color);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .finance-card .card-icon {
+            color: var(--finance-color);
+        }
+
+        .vision-card .card-icon {
+            color: var(--vision-color);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .card-description {
+            color: #6c757d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .btn-dashboard {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-finance {
+            background: linear-gradient(135deg, var(--finance-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .btn-finance:hover {
+            background: transparent;
+            border-color: var(--finance-color);
+            color: var(--finance-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-vision {
+            background: linear-gradient(135deg, var(--vision-color) 0%, #560bad 100%);
+            color: white;
+        }
+
+        .btn-vision:hover {
+            background: transparent;
+            border-color: var(--vision-color);
+            color: var(--vision-color);
+            transform: translateY(-2px);
+        }
+
+        .quick-stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .finance-card {
+            animation-delay: 0.2s;
+        }
+
+        .vision-card {
+            animation-delay: 0.4s;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .dashboard-card {
+                padding: 30px 20px;
+            }
+
+            .card-icon {
+                font-size: 3rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .dashboard-card {
+                padding: 25px 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="logo">
+                <i class="bi bi-speedometer2"></i>
+            </div>
+            <h1>Welcome to LifeTracker</h1>
+            <p class="subtitle">Your complete life management dashboard</p>
+            <p>Track your finances and achieve your dreams in one place</p>
+        </div>
+
+        <div class="dashboard-cards">
+            <!-- Expense Tracker Card -->
+            <div class="dashboard-card finance-card">
+                <div>
+                    <div class="card-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <h3 class="card-title">Expense Tracker</h3>
+                    <p class="card-description">
+                        Manage your finances, track expenses, monitor cash flow, and visualize your spending patterns with detailed charts and reports.
+                    </p>
+                </div>
+                <a href="{% url 'expense_home' %}" class="btn-dashboard btn-finance">
+                    <i class="bi bi-arrow-left me-2"></i>Open Expense Tracker
+                </a>
+            </div>
+
+            <!-- Vision Board Card -->
+            <div class="dashboard-card vision-card">
+                <div>
+                    <div class="card-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3 class="card-title">Vision & Ideas Board</h3>
+                    <p class="card-description">
+                        Plan your dreams, set goals, track progress, and turn your visions into reality with our interactive vision board.
+                    </p>
+                </div>
+                <a href="{% url 'create_idea' %}" class="btn-dashboard btn-vision">
+                    <i class="bi bi-arrow-right me-2"></i>Open Vision Board
+                </a>
+            </div>
+        </div>
+
+        <div class="quick-stats">
+            <h4 class="stats-title">Your LifeTracker Overview</h4>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Powerful Tools</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Possibilities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Your Control</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>LifeTracker &copy; 2023 - Empowering you to build the life you deserve</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

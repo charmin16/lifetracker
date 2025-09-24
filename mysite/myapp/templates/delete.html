@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Deletion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .delete-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border-top: 5px solid #dc3545;
+        }
+
+        .warning-icon {
+            font-size: 4rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        h4 {
+            color: #343a40;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .idea-preview {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            border-left: 4px solid #6f42c1;
+        }
+
+        .idea-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #6f42c1;
+            margin-bottom: 10px;
+        }
+
+        .idea-details {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            min-width: 140px;
+        }
+
+        .btn-delete:hover {
+            background-color: #bb2d3b;
+            border-color: #b02a37;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            min-width: 140px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5c636a;
+            border-color: #565e64;
+        }
+
+        @media (max-width: 576px) {
+            .delete-container {
+                padding: 30px 20px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn-delete, .btn-cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="delete-container">
+        <div class="warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h4>Are you sure you want to delete this dream?</h4>
+
+        <div class="idea-preview">
+            <div class="idea-title">{{ idea.title }}</div>
+            <div class="idea-details">
+                <div><strong>Category:</strong> {{ idea.category }}</div>
+                <div><strong>Status:</strong> {{ idea.status }}</div>
+                <div><strong>Priority:</strong> {{ idea.priority }}</div>
+                {% if idea.target_date %}
+                <div><strong>Target Date:</strong> {{ idea.target_date|date:"M d, Y" }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <p class="text-muted">This action cannot be undone. All associated requirements will also be deleted.</p>
+
+        <div class="btn-group">
+            <a href="{% url 'create_idea' %}" class="btn btn-cancel">
+                <i class="bi bi-x-circle me-2"></i>No, Cancel
+            </a>
+
+            <form method="POST" action="{% url 'delete_idea' idea.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-delete">
+                    <i class="bi bi-trash me-2"></i>Yes, Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

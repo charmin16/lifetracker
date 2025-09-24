@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Expenses - TrackIt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            padding-bottom: 50px;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: none;
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background-color: #f1f5ff;
+            color: var(--secondary-color);
+            font-weight: 600;
+            padding: 12px 15px;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .amount-positive {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .amount-negative {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .balance-positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .balance-negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .transaction-credit {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .transaction-expense {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .transaction-transfer {
+            color: #fd7e14;
+            font-weight: 500;
+        }
+
+        .transaction-withdrawal {
+            color: #6f42c1;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #adb5bd;
+            margin-bottom: 15px;
+        }
+
+        .filter-active {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 14px;
+            }
+
+            .table th, .table td {
+                padding: 8px 10px;
+            }
+
+            .filter-form {
+                margin-bottom: 15px;
+            }
+
+            /* Mobile: Chart first, then categories */
+            .mobile-order-1 {
+                order: 1;
+            }
+
+            .mobile-order-2 {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-speedometer2"></i> LifeTracker
+            </a>
+            <div class="d-flex">
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-grid"></i> Features
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'list-expenses' %}">
+                            <i class="bi bi-wallet2 me-2"></i>Expense Tracker
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'create_idea' %}">
+                            <i class="bi bi-bullseye me-2"></i>Vision Board
+                        </a></li>
+                    </ul>
+                </div>
+                <a href="{% url 'list-recent' %}" class="btn btn-outline-light btn-sm me-2">
+                    <i class="bi bi-clock"></i> Recent
+                </a>
+                <form method="POST" action="{% url 'logout' %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">All Expenses</h2>
+            <a href="{% url 'create-expense' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New Expense
+            </a>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter Expenses</h5>
+
+            {% if request.GET.month or request.GET.year or request.GET.days %}
+            <div class="filter-active">
+                <i class="bi bi-filter"></i>
+                {% if request.GET.month %}
+                    Filtered by: {{ request.GET.month|title }}
+                {% elif request.GET.year %}
+                    Filtered by Year: {{ request.GET.year }}
+                {% elif request.GET.days %}
+                    Last {{ request.GET.days }} Days
+                {% endif %}
+                <a href="{% url 'list-expenses' %}" class="text-white ms-2">
+                    <i class="bi bi-x-circle"></i>
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <form method="GET" action="" class="filter-form">
+                        <label class="form-label">Filter by Month/Year</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="month" placeholder="Eg May 2025" value="{{ request.GET.month }}">
+                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <form method="GET" action="" class="filter-form">
+                        <label class="form-label">Filter by Year</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="year" placeholder="Eg 2024" value="{{ request.GET.year }}">
+                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <form method="GET" action="" class="filter-form">
+                        <label class="form-label">Last N Days</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="days" placeholder="Eg 10 for last 10 days" value="{{ request.GET.days }}">
+                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Table Card -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-table me-2"></i>All Transactions</span>
+                <span class="badge bg-primary">{{ expenses|length }} records</span>
+            </div>
+            <div class="card-body p-0">
+                {% if expenses|length == 0 %}
+                    <div class="empty-state">
+                        <i class="bi bi-wallet2"></i>
+                        <h4>No Expenses Found</h4>
+                        <p class="text-muted">
+                            {% if request.GET.month or request.GET.year or request.GET.days %}
+                                Try adjusting your filters or <a href="{% url 'list-expenses' %}">view all expenses</a>.
+                            {% else %}
+                                Start tracking your expenses by adding your first transaction.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'create-expense' %}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-circle"></i> Add Your First Expense
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Item / Service</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Bank Balance</th>
+                                    <th>Cash Balance</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in expenses %}
+                                <tr>
+                                    <td>{{ item.date }}</td>
+                                    <td>
+                                        {% if item.transaction_type == 'Credit' %}
+                                            <span class="transaction-credit">{{ item.transaction_type }}</span>
+                                        {% elif item.transaction_type == 'Expense' %}
+                                            <span class="transaction-expense">{{ item.transaction_type }}</span>
+                                        {% elif item.transaction_type == 'Transfer' %}
+                                            <span class="transaction-transfer">{{ item.transaction_type }}</span>
+                                        {% elif item.transaction_type == 'Withdrawal' %}
+                                            <span class="transaction-withdrawal">{{ item.transaction_type }}</span>
+                                        {% else %}
+                                            {{ item.transaction_type }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.item_service }}</td>
+                                    <td>{{ item.category }}</td>
+                                    <td class="{% if item.transaction_type == 'Credit' %}amount-positive{% else %}amount-negative{% endif %}">
+                                        {% if item.transaction_type == 'Credit' %}
+                                            +{{ item.amount }}
+                                        {% else %}
+                                            -{{ item.amount }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="{% if item.bank_balance < 0 %}balance-negative{% else %}balance-positive{% endif %}">
+                                        {{ item.bank_balance }}
+                                    </td>
+                                    <td class="{% if item.cash_balance < 0 %}balance-negative{% else %}balance-positive{% endif %}">
+                                        {{ item.cash_balance }}
+                                    </td>
+                                    <td>{{ item.note }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Chart and Category Section -->
+        {% if expenses|length > 0 %}
+        <div class="row">
+            <!-- Chart Section - Mobile first, Desktop second -->
+            <div class="col-lg-8 col-12 mobile-order-1 mb-3 mb-lg-0">
+                <div class="chart-container">
+                    <h5 class="mb-3">
+                        <i class="bi bi-graph-up me-2"></i>
+                        {% if request.GET.month %}
+                            Spending Chart for {{ request.GET.month|title }}
+                        {% elif request.GET.year %}
+                            Spending Chart for {{ request.GET.year }}
+                        {% elif request.GET.days %}
+                            Spending Chart for the Last {{ request.GET.days }} Days
+                        {% else %}
+                            Overall Spending by Category
+                        {% endif %}
+                    </h5>
+                    <canvas id="expenseChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Category Summary - Mobile second, Desktop first -->
+            <div class="col-lg-4 col-12 mobile-order-2">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-bar-chart me-2"></i>Spending by Category
+                    </div>
+                    <div class="card-body">
+                        {% for row in totals %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ row.category }}</span>
+                                <span class="fw-bold">{{ row.total_amount }}</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 8px;">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width: {{ row.total_amount|floatformat:0 }}%; background-color: #{% cycle '4361ee' '3a0ca3' '7209b7' '4cc9f0' 'f72585' %};"
+                                     aria-valuenow="{{ row.total_amount }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">LifeTracker &copy; 2023 - Expense Tracking Made Simple</p>
+        </div>
+    </footer>
+
+    <!-- Chart.js Script -->
+    {% if expenses|length > 0 %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('expenseChart');
+        const categories = {{ categories|safe }};
+        const amounts = {{ amounts|safe }};
+
+        // Generate a color for each category
+        const generateColors = (count) => {
+            const colors = ['#4361ee', '#3a0ca3', '#7209b7', '#4cc9f0', '#f72585', '#4895ef', '#560bad'];
+            return colors.slice(0, count);
+        };
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: 'Amount Spent',
+                    data: amounts,
+                    backgroundColor: generateColors(categories.length),
+                    borderColor: generateColors(categories.length).map(color => color.replace('0.6', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

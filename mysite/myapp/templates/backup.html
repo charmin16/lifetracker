@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vision Board</title>
+</head>
+<body>
+    <div class="container">
+        <h2>My Vision Board</h2>
+        <button type="button" onclick="toggleForm()" id="toggleBtn">+ Add Idea</button>
+        <!-- Create Form -->
+         <div id="addForm" style="display:none; margin-top: 15px;">
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Add Idea</button>
+            </form>
+         </div>
+
+        <hr>
+
+        <!-- List Ideas -->
+        {% for idea in ideas %}
+            <h3>Title: {{ idea.title }}</h3>
+            <h5>Detail: {{ idea.detail }}</h5>
+            <h5>Priority: {{ idea.priority }}</h5>
+            <h5>Status: {{ idea.status }}</h5>
+            <h5>Target Date: {{ idea.target_date }}</h5>
+
+            <a href="{% url 'update' idea.pk %}">[ Edit ]</a>
+            {% if idea.status != "Done" %}
+                <a href="{% url 'done' idea.pk %}">[ Mark Done ]</a>
+            {% endif %}
+            <a href="{% url 'delete' idea.pk %}">[ Delete ]</a>
+            <hr>
+        {% empty %}
+            <h3>No Ideas/Visions Yet</h3>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
