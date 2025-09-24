@@ -1,0 +1,9 @@
+{
+    "build": {
+        "builder": "NIXPACKS"
+    },
+    "deploy": {
+        "startCommand": "cd mysite && python manage.py migrate && gunicorn mysite.wsgi:application",
+        "restartPolicyType": "ON_FAILURE"
+    }
+}
