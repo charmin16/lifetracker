@@ -129,7 +129,27 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Railway production settings
+# SQLITE
+if 'RAILWAY_STATIC_URL' in os.environ:
+    DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+    SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
+
+    ALLOWED_HOSTS = [
+        'lifetracker-production-8be8.up.railway.app',
+        '.railway.app',
+        'localhost',
+        '127.0.0.1'
+    ]
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+# Postgres
+'''# Railway production settings
 if 'RAILWAY_STATIC_URL' in os.environ:
     DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
     SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
@@ -151,4 +171,4 @@ if 'RAILWAY_STATIC_URL' in os.environ:
             'HOST': os.environ.get('PGHOST'),
             'PORT': os.environ.get('PGPORT'),
         }
-    }
+    }'''
