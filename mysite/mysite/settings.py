@@ -131,14 +131,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Railway production settings
 if 'RAILWAY_STATIC_URL' in os.environ:
-    DEBUG = False
-    ALLOWED_HOSTS = ['*']
+    DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+    SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 
-    # Static files
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATIC_URL = '/static/'
+    ALLOWED_HOSTS = [
+        'lifetracker-production-8be8.up.railway.app',
+        '.railway.app',  # This allows all Railway subdomains
+        'localhost',
+        '127.0.0.1'
+    ]
 
-    # SIMPLE Database configuration - no external dependencies needed
+    # Database configuration
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
