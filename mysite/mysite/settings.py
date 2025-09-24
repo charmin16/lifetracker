@@ -141,12 +141,23 @@ if 'RAILWAY_STATIC_URL' in os.environ:
         '127.0.0.1'
     ]
 
+    # Use SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
+    # ✅ ADD THESE LINES FOR CSRF FIX:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://lifetracker-production-8be8.up.railway.app',
+        'https://*.railway.app'
+    ]
+
+    # Ensure secure cookies
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 # Postgres
 '''# Railway production settings
