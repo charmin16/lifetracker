@@ -161,6 +161,20 @@
         <form method="POST" action="">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if form.errors %}
+            <div class="alert alert-warning">
+            Please correct the errors below.
+            </div>
+             {% endif %}
+
             <div class="form-card">
                 <div class="form-group">
                     <label for="id_date" class="form-label">
@@ -183,6 +197,14 @@
                         <i class="bi bi-currency-naira me-2"></i>Amount
                     </label>
                     {{ form.amount }}
+
+                    {% if form.amount.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {% for error in form.amount.errors %}
+                        {{ error }} {% endfor %}
+                    </div>
+                    {% endif %}
+
                 </div>
             </div>
 
