@@ -1,4 +1,3 @@
-from turtle import title
 from django.db.models import ExpressionWrapper, F, DecimalField, Case, Sum, When
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
@@ -123,37 +122,6 @@ class ListAllExpense(ListView, LoginRequiredMixin):
         context["amounts"] = json.dumps(amounts)
         return context
 
-    '''def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        expenses = context['expenses']
-
-        cash = 0
-        balance = 0
-        for expense in expenses:
-            if expense.transaction_type == 'Credit':
-                balance += expense.amount
-            elif expense.transaction_type == 'Withdrawal':
-                balance -= expense.amount
-                cash += expense.amount
-            elif expense.transaction_type == 'Transfer':
-                balance -= expense.amount
-            elif expense.transaction_type == 'Expense':
-                cash -= expense.amount
-
-            expense.bank_balance = balance
-            expense.cash_balance = cash
-
-        totals = (
-            Expense.objects.filter(user=self.request.user).exclude(category__isnull=True)
-            .values("category")
-            .annotate(total_amount=Sum("amount"))
-            .order_by("-total_amount")
-        )
-
-        context['totals'] = totals
-
-        return context'''
-
 
 class ListRecentExpense(ListView, LoginRequiredMixin):
     model = Expense
@@ -167,10 +135,6 @@ class ListRecentExpense(ListView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Don't calculate balances for recent view - it will be inaccurate
-        # Instead, we'll modify the template to not show balance columns
-
-        # For charts, we still want ALL data
         totals = (
             Expense.objects.filter(user=self.request.user, transaction_type__in=['Expense', 'Transfer'])
             .exclude(category="")
@@ -285,28 +249,6 @@ class DeleteIdea(DeleteView):
     model = Idea
     template_name = 'delete.html'
     success_url = reverse_lazy('create_idea')
-
-
-'''@login_required
-def mark_done(request, idea_id):
-    """Mark all requirements for a dream as done (progress 100%)."""
-    idea = get_object_or_404(Idea, id=idea_id, user=request.user)
-
-    # mark all requirements as done
-    idea.requirements.update(is_done=True)
-
-    # set status to "Done"
-    idea.status = "Done"
-    idea.save(update_fields=["status"])
-
-    # optional: if you store progress in the model, enforce 100%
-    if hasattr(idea, "progress_pct"):
-        idea.progress_pct = 100
-        idea.circle_offset = 0  # fully filled
-        # only needed if you persist progress fields in DB
-
-    return redirect("create_idea")
-'''
 
 
 @login_required
