@@ -129,6 +129,42 @@
             font-weight: 500;
         }
 
+        /* Mobile Landscape Hint - Only shows on mobile */
+.mobile-landscape-hint {
+    display: none;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    text-align: center;
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mobile-landscape-hint i {
+    font-size: 16px;
+}
+
+/* Show only on mobile devices */
+@media (max-width: 768px) {
+    .mobile-landscape-hint {
+        display: flex;
+    }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+    .mobile-landscape-hint {
+        display: none;
+    }
+}
+
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -212,6 +248,13 @@
                 </a>
             </div>
         </div>
+
+        <!-- Mobile Landscape Hint - WILL ONLY SHOW ON MOBILE -->
+        <div class="mobile-landscape-hint">
+            <i class="bi bi-phone-landscape"></i>
+            <span>Tip: Switch to landscape to see all the columns on this page. To view all columns available, go to View All Records </span>
+        </div>
+
 
         <!-- Recent Expenses Card -->
         <div class="card">
