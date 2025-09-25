@@ -49,22 +49,41 @@ class CreateExpense(CreateView, LoginRequiredMixin):
         transaction_type = form.cleaned_data.get('transaction_type')
         amount = form.cleaned_data.get('amount')
 
-        # Calculate current bank balance
+        # Calculate current balances
+        user_expenses = Expense.objects.filter(user=self.request.user)
+
+        bank_balance = 0
+        cash_balance = 0
+
+        for expense in user_expenses:
+            if expense.transaction_type == 'Credit':
+                bank_balance += expense.amount
+            elif expense.transaction_type == 'Withdrawal':
+                bank_balance -= expense.amount
+                cash_balance += expense.amount
+            elif expense.transaction_type == 'Transfer':
+                bank_balance -= expense.amount
+            elif expense.transaction_type == 'Expense':
+                # Expenses first use cash, then bank balance
+                if cash_balance >= expense.amount:
+                    cash_balance -= expense.amount
+                else:
+                    bank_balance -= expense.amount
+
+        # Check if transaction exceeds available funds
         if transaction_type in ['Withdrawal', 'Transfer']:
-            # Get all expenses for the user
-            user_expenses = Expense.objects.filter(user=self.request.user)
+            if amount > bank_balance:
+                form.add_error('amount', f'Insufficient bank balance. Current balance: ₦{bank_balance:,.2f}')
+                return self.form_invalid(form)
 
-            # Calculate current balance
-            balance = 0
-            for expense in user_expenses:
-                if expense.transaction_type == 'Credit':
-                    balance += expense.amount
-                elif expense.transaction_type in ['Withdrawal', 'Transfer', 'Expense']:
-                    balance -= expense.amount
-
-            # Check if withdrawal/transfer exceeds balance
-            if amount > balance:
-                form.add_error('amount', f'Insufficient funds. Current balance: ₦{balance:,.2f}')
+        elif transaction_type == 'Expense':
+            total_available = cash_balance + bank_balance
+            if amount > total_available:
+                form.add_error('amount',
+                               f'Insufficient funds for this expense. '
+                               f'Cash: ₦{cash_balance:,.2f}, Bank: ₦{bank_balance:,.2f}, '
+                               f'Total Available: ₦{total_available:,.2f}'
+                               )
                 return self.form_invalid(form)
 
         # If validation passes, save the expense

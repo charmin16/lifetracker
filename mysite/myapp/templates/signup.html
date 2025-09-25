@@ -31,7 +31,7 @@
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             padding: 40px;
-            max-width: 500px;
+            max-width: 450px;
             width: 100%;
             margin: 0 auto;
             color: #333;
@@ -53,6 +53,7 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 10px;
+            font-size: 1.8rem;
         }
 
         .subtitle {
@@ -60,34 +61,26 @@
             text-align: center;
             margin-bottom: 30px;
             line-height: 1.5;
+            font-size: 0.95rem;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             font-weight: 600;
             color: var(--secondary-color);
             margin-bottom: 8px;
-            display: block;
+            font-size: 0.9rem;
         }
 
-        .form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s;
-            width: 100%;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
-        }
-
-        .input-group {
+        .input-group-custom {
             position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
         }
 
         .input-icon {
@@ -97,28 +90,56 @@
             transform: translateY(-50%);
             color: #6c757d;
             z-index: 5;
+            pointer-events: none;
         }
 
-        .input-with-icon {
-            padding-left: 45px;
+        .form-control-custom {
+            border-radius: 10px;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            z-index: 6;
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
         }
 
         .btn-signup {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             border: none;
             border-radius: 10px;
-            padding: 12px;
+            padding: 14px;
             font-weight: 600;
             color: white;
             width: 100%;
             transition: all 0.3s;
-            margin-top: 15px;
+            margin-top: 10px;
+            font-size: 1rem;
         }
 
         .btn-signup:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
         }
 
         .benefits-list {
@@ -143,6 +164,11 @@
             color: var(--primary-color);
             margin-right: 10px;
             font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            flex: 1;
         }
 
         .additional-links {
@@ -164,17 +190,21 @@
 
         .error-message {
             color: #dc3545;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .form-control-custom.error {
+            border-color: #dc3545;
+        }
+
+        .field-errors {
+            color: #dc3545;
+            font-size: 0.85rem;
             margin-top: 5px;
         }
 
-        .password-requirements {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-
-        /* Animation */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -193,10 +223,11 @@
         @media (max-width: 576px) {
             .signup-container {
                 padding: 30px 20px;
+                max-width: 100%;
             }
 
             body {
-                padding: 15px;
+                padding: 10px;
             }
 
             .logo-icon {
@@ -209,12 +240,25 @@
 
             .benefits-list {
                 padding: 15px;
+                margin: 20px 0;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
             }
         }
 
-        /* Error state styling */
-        .error input {
-            border-color: #dc3545;
+        /* Improve form field spacing */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -5px;
+            margin-left: -5px;
+        }
+
+        .form-row > .col {
+            padding-right: 5px;
+            padding-left: 5px;
         }
     </style>
 </head>
@@ -231,19 +275,19 @@
         <div class="benefits-list">
             <div class="benefit-item">
                 <i class="bi bi-check-circle-fill benefit-icon"></i>
-                <span>Track expenses and income</span>
+                <span class="benefit-text">Track expenses and income</span>
             </div>
             <div class="benefit-item">
                 <i class="bi bi-check-circle-fill benefit-icon"></i>
-                <span>Create and manage your vision board</span>
+                <span class="benefit-text">Create and manage your vision board</span>
             </div>
             <div class="benefit-item">
                 <i class="bi bi-check-circle-fill benefit-icon"></i>
-                <span>Visualize your financial progress</span>
+                <span class="benefit-text">Visualize your financial progress</span>
             </div>
             <div class="benefit-item">
                 <i class="bi bi-check-circle-fill benefit-icon"></i>
-                <span>Work towards your life goals</span>
+                <span class="benefit-text">Work towards your life goals</span>
             </div>
         </div>
 
@@ -255,29 +299,62 @@
                     <label for="{{ field.id_for_label }}" class="form-label">
                         {{ field.label }}
                     </label>
-                    {{ field }}
 
-                    {% if field.help_text %}
-                    <div class="password-requirements">
-                        {{ field.help_text }}
+                    <div class="input-group-custom">
+                        {% if field.name == 'username' %}
+                            <i class="bi bi-person input-icon"></i>
+                            <input type="text"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control-custom {% if field.errors %}error{% endif %}"
+                                   placeholder="Enter your username"
+                                   value="{{ field.value|default:'' }}">
+
+                        {% elif field.name == 'password1' or field.name == 'password2' %}
+                            <i class="bi bi-lock input-icon"></i>
+                            <input type="password"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control-custom {% if field.errors %}error{% endif %}"
+                                   placeholder="{% if field.name == 'password1' %}Enter your password{% else %}Confirm your password{% endif %}"
+                                   value="{{ field.value|default:'' }}">
+                            <button type="button" class="password-toggle" onclick="togglePassword('{{ field.id_for_label }}')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+
+                        {% else %}
+                            <i class="bi bi-envelope input-icon"></i>
+                            <input type="email"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control-custom {% if field.errors %}error{% endif %}"
+                                   placeholder="Enter your email"
+                                   value="{{ field.value|default:'' }}">
+                        {% endif %}
                     </div>
-                    {% endif %}
 
                     {% if field.errors %}
-                    <div class="error-message">
-                        {{ field.errors }}
-                    </div>
+                        <div class="field-errors">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <small class="text-muted" style="font-size: 0.8rem; display: block; margin-top: 5px;">
+                            {{ field.help_text }}
+                        </small>
                     {% endif %}
                 </div>
             {% endfor %}
 
-            <!-- Display non-field errors -->
             {% if form.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-                {% for error in form.non_field_errors %}
-                {{ error }}
-                {% endfor %}
-            </div>
+                <div class="alert alert-danger" role="alert" style="font-size: 0.9rem;">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
             {% endif %}
 
             <button type="submit" class="btn btn-signup">
@@ -286,53 +363,39 @@
         </form>
 
         <div class="additional-links">
-            <p class="mb-0">Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
+            <p class="mb-0" style="font-size: 0.9rem;">Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // Add Bootstrap classes to form fields after page loads
+        // Password visibility toggle
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = passwordField.nextElementSibling.querySelector('i');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Add focus effects
         document.addEventListener('DOMContentLoaded', function() {
-            // Add classes to all form inputs
-            const inputs = document.querySelectorAll('input');
+            const inputs = document.querySelectorAll('.form-control-custom');
+
             inputs.forEach(input => {
-                input.classList.add('form-control');
+                input.addEventListener('focus', function() {
+                    this.parentElement.querySelector('.input-icon').style.color = 'var(--primary-color)';
+                });
 
-                // Add error class if field has errors
-                if (input.parentElement.querySelector('.error-message')) {
-                    input.classList.add('error');
-                }
-            });
-
-            // Add icons based on field type
-            const usernameField = document.querySelector('input[type="text"]');
-            const emailField = document.querySelector('input[type="email"]');
-            const passwordFields = document.querySelectorAll('input[type="password"]');
-
-            if (usernameField) {
-                const icon = document.createElement('i');
-                icon.className = 'bi bi-person input-icon';
-                usernameField.parentElement.classList.add('input-group');
-                usernameField.classList.add('input-with-icon');
-                usernameField.parentElement.insertBefore(icon, usernameField);
-            }
-
-            if (emailField) {
-                const icon = document.createElement('i');
-                icon.className = 'bi bi-envelope input-icon';
-                emailField.parentElement.classList.add('input-group');
-                emailField.classList.add('input-with-icon');
-                emailField.parentElement.insertBefore(icon, emailField);
-            }
-
-            passwordFields.forEach((passwordField, index) => {
-                const icon = document.createElement('i');
-                icon.className = 'bi bi-lock input-icon';
-                passwordField.parentElement.classList.add('input-group');
-                passwordField.classList.add('input-with-icon');
-                passwordField.parentElement.insertBefore(icon, passwordField);
+                input.addEventListener('blur', function() {
+                    this.parentElement.querySelector('.input-icon').style.color = '#6c757d';
+                });
             });
         });
     </script>

@@ -24,11 +24,17 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            /* Prevent initial flicker */
+            opacity: 0;
+            animation: pageFadeIn 0.6s ease-in-out forwards;
         }
 
         .dashboard-container {
             max-width: 800px;
             margin: 0 auto;
+            /* Ensure container is ready before content */
+            opacity: 0;
+            animation: containerFadeIn 0.8s ease-out 0.2s forwards;
         }
 
         .header {
@@ -75,6 +81,10 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            /* Smooth card appearance */
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardSlideIn 0.8s ease-out forwards;
         }
 
         .dashboard-card:hover {
@@ -88,6 +98,14 @@
 
         .vision-card:hover {
             border-color: var(--vision-color);
+        }
+
+        .finance-card {
+            animation-delay: 0.4s;
+        }
+
+        .vision-card {
+            animation-delay: 0.6s;
         }
 
         .card-icon {
@@ -157,6 +175,8 @@
             padding: 25px;
             margin-top: 40px;
             backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.8s forwards;
         }
 
         .stats-title {
@@ -193,10 +213,28 @@
             padding: 20px;
             opacity: 0.7;
             font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1s forwards;
         }
 
-        /* Animation */
-        @keyframes fadeInUp {
+        /* New smooth animations */
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes containerFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardSlideIn {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -207,16 +245,20 @@
             }
         }
 
-        .dashboard-card {
-            animation: fadeInUp 0.8s ease-out;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .finance-card {
-            animation-delay: 0.2s;
-        }
-
-        .vision-card {
-            animation-delay: 0.4s;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -297,7 +339,7 @@
                     </p>
                 </div>
                 <a href="{% url 'create_idea' %}" class="btn-dashboard btn-vision">
-                    <i class="bi bi-arrow-right me-2"></i>Open Vision Board
+                    Open Vision Board  <i class="bi bi-arrow-right me-2"></i>
                 </a>
             </div>
         </div>

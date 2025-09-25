@@ -187,6 +187,16 @@
             .mobile-order-2 {
                 order: 2;
             }
+
+            .filter-section .card-body {
+                background-color: #f8f9fa;
+                border-radius: 8px;
+            }
+
+            .filter-active {
+                border-left: 4px solid #0d6efd;
+                padding: 10px 15px;
+}
         }
     </style>
 </head>
@@ -234,11 +244,18 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="filter-section">
-            <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter Expenses</h5>
+        <div class="filter-section mb-4">
+            <!-- Toggle Button -->
+            <button class="btn btn-outline-primary w-100 d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                <i class="bi bi-funnel"></i> Show/Hide Filters
+            </button>
+
+            <button class="btn btn-outline-primary d-none d-md-inline-block mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+                <i class="bi bi-funnel"></i> Filters
+            </button>
 
             {% if request.GET.month or request.GET.year or request.GET.days %}
-            <div class="filter-active">
+            <div class="filter-active alert alert-info">
                 <i class="bi bi-filter"></i>
                 {% if request.GET.month %}
                     Filtered by: {{ request.GET.month|title }}
@@ -247,41 +264,46 @@
                 {% elif request.GET.days %}
                     Last {{ request.GET.days }} Days
                 {% endif %}
-                <a href="{% url 'list-expenses' %}" class="text-white ms-2">
-                    <i class="bi bi-x-circle"></i>
+                <a href="{% url 'list-expenses' %}" class="text-dark ms-2">
+                    <i class="bi bi-x-circle"></i> Clear
                 </a>
             </div>
             {% endif %}
 
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <form method="GET" action="" class="filter-form">
-                        <label class="form-label">Filter by Month/Year</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="month" placeholder="Eg May 2025" value="{{ request.GET.month }}">
-                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+            <!-- Collapsible Filter Content -->
+            <div class="collapse show" id="filterCollapse">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4 mb-3">
+                            <form method="GET" action="" class="filter-form">
+                                <label class="form-label">Filter by Month/Year</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="month" placeholder="Eg May 2025" value="{{ request.GET.month }}">
+                                    <button type="submit" class="btn btn-outline-primary">Filter</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    <form method="GET" action="" class="filter-form">
-                        <label class="form-label">Filter by Year</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" name="year" placeholder="Eg 2024" value="{{ request.GET.year }}">
-                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+                        <div class="col-12 col-md-4 mb-3">
+                            <form method="GET" action="" class="filter-form">
+                                <label class="form-label">Filter by Year</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="year" placeholder="Eg 2024" value="{{ request.GET.year }}">
+                                    <button type="submit" class="btn btn-outline-primary">Filter</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    <form method="GET" action="" class="filter-form">
-                        <label class="form-label">Last N Days</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" name="days" placeholder="Eg 10 for last 10 days" value="{{ request.GET.days }}">
-                            <button type="submit" class="btn btn-outline-primary">Filter</button>
+                        <div class="col-12 col-md-4 mb-3">
+                            <form method="GET" action="" class="filter-form">
+                                <label class="form-label">Last N Days</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="days" placeholder="Eg 10 for last 10 days" value="{{ request.GET.days }}">
+                                    <button type="submit" class="btn btn-outline-primary">Filter</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -296,7 +318,7 @@
                 {% if expenses|length == 0 %}
                     <div class="empty-state">
                         <i class="bi bi-wallet2"></i>
-                        <h4>No Expenses Found</h4>
+                        <h4>No Transactions Found</h4>
                         <p class="text-muted">
                             {% if request.GET.month or request.GET.year or request.GET.days %}
                                 Try adjusting your filters or <a href="{% url 'list-expenses' %}">view all expenses</a>.
