@@ -20,6 +20,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--dark-text);
             padding-bottom: 50px;
+            font-size: 16px;
         }
 
         .navbar-custom {
@@ -40,31 +41,36 @@
             font-weight: 600;
             padding: 15px 20px;
             border-radius: 12px 12px 0 0 !important;
+            font-size: 1.1rem;
         }
 
         .table-responsive {
             border-radius: 8px;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 2px solid #e9ecef;
         }
 
         .table {
-            min-width: 800px; /* Force table to be wide enough for all columns */
             width: 100%;
+            min-width: 1000px;
+            font-size: 1rem;
         }
 
         .table th {
             background-color: #f1f5ff;
             color: var(--secondary-color);
             font-weight: 600;
-            padding: 12px 15px;
-            white-space: nowrap; /* Prevent header text wrapping */
+            padding: 14px 12px;
+            white-space: nowrap;
+            font-size: 1rem;
         }
 
         .table td {
-            padding: 12px 15px;
+            padding: 14px 12px;
             vertical-align: middle;
-            white-space: nowrap; /* Prevent cell content wrapping */
+            white-space: nowrap;
+            font-size: 1rem;
         }
 
         .table-hover tbody tr:hover {
@@ -115,8 +121,9 @@
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             border-radius: 8px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-weight: 500;
+            font-size: 1rem;
         }
 
         .btn-primary:hover {
@@ -128,8 +135,9 @@
             color: var(--primary-color);
             border-color: var(--primary-color);
             border-radius: 8px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-weight: 500;
+            font-size: 1rem;
         }
 
         .btn-outline-primary:hover {
@@ -167,71 +175,101 @@
         .filter-active {
             background-color: var(--primary-color);
             color: white;
-            padding: 5px 15px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             display: inline-block;
             margin-bottom: 15px;
         }
 
-        /* Mobile landscape suggestion */
-        .mobile-landscape-alert {
+        /* Mobile landscape hint - HIDDEN ON DESKTOP */
+        .mobile-landscape-hint {
             display: none;
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px 15px;
             margin-bottom: 15px;
             text-align: center;
+            font-size: 0.95rem;
         }
 
-        .mobile-landscape-alert i {
-            font-size: 24px;
+        .mobile-landscape-hint i {
+            font-size: 20px;
             color: #856404;
-            margin-bottom: 10px;
+            margin-right: 8px;
         }
 
         /* Mobile-specific styles */
         @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 14px;
-                position: relative;
+            body {
+                font-size: 16px;
+                padding: 10px;
             }
 
-            .table th, .table td {
-                padding: 10px 12px;
-                font-size: 13px; /* Slightly smaller font for mobile */
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+                max-width: 100%;
             }
 
-            .mobile-landscape-alert {
-                display: block; /* Show landscape suggestion on mobile */
+            /* SHOW LANDSCAPE HINT ONLY ON MOBILE */
+            .mobile-landscape-hint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            .filter-form {
-                margin-bottom: 15px;
+            .table {
+                min-width: 1000px;
+                font-size: 0.95rem;
             }
 
-            /* Hide some less important columns on very small screens */
-            @media (max-width: 576px) {
-                .table th:nth-child(4), /* Category */
-                .table td:nth-child(4),
-                .table th:nth-child(8), /* Notes */
-                .table td:nth-child(8) {
-                    display: none;
-                }
+            .table th,
+            .table td {
+                padding: 12px 10px;
+                font-size: 0.95rem;
             }
 
-            @media (max-width: 400px) {
-                .table th:nth-child(3), /* Item/Service */
-                .table td:nth-child(3) {
-                    display: none;
-                }
+            .table th {
+                font-size: 0.95rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
             }
         }
 
+        @media (max-width: 576px) {
+            body {
+                font-size: 15px;
+            }
+
+            .table th,
+            .table td {
+                font-size: 0.9rem;
+                padding: 10px 8px;
+            }
+
+            .table th {
+                font-size: 0.9rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Desktop styles - HIDE LANDSCAPE HINT */
         @media (min-width: 769px) {
-            .mobile-landscape-alert {
-                display: none; /* Hide landscape suggestion on desktop */
+            .mobile-landscape-hint {
+                display: none;
+            }
+
+            .table th,
+            .table td {
+                font-size: 1rem;
+                padding: 14px 12px;
             }
         }
     </style>
@@ -279,16 +317,14 @@
             </a>
         </div>
 
-        <!-- Mobile Landscape Alert -->
-        <div class="mobile-landscape-alert">
+        <!-- Mobile Landscape Hint - WILL ONLY SHOW ON MOBILE -->
+        <div class="mobile-landscape-hint">
             <i class="bi bi-phone-landscape"></i>
-            <h6 class="mb-2">Tip: Switch to Landscape</h6>
-            <p class="mb-0 small">Rotate your phone sideways to see all table columns more comfortably.</p>
+            <span>Tip: Switch to landscape or scroll sideways to see all columns</span>
         </div>
 
         <!-- Filter Section -->
         <div class="filter-section mb-4">
-            <!-- Toggle Button -->
             <button class="btn btn-outline-primary w-100 d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                 <i class="bi bi-funnel"></i> Show/Hide Filters
             </button>
@@ -313,7 +349,6 @@
             </div>
             {% endif %}
 
-            <!-- Collapsible Filter Content -->
             <div class="collapse" id="filterCollapse">
                 <div class="card card-body">
                     <div class="row">
@@ -385,7 +420,7 @@
                                     <th>Amount</th>
                                     <th>Bank Balance</th>
                                     <th>Cash Balance</th>
-                                    <th>Notes</th>
+                                    <th>Notes</th> <!-- NOTES COLUMN IS HERE -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -420,7 +455,7 @@
                                     <td class="{% if item.cash_balance < 0 %}balance-negative{% else %}balance-positive{% endif %}">
                                         {{ item.cash_balance }}
                                     </td>
-                                    <td>{{ item.note }}</td>
+                                    <td>{{ item.note }}</td> <!-- NOTES DATA IS HERE -->
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -430,10 +465,9 @@
             </div>
         </div>
 
-        <!-- Chart and Category Section - ONLY SHOW IF THERE ARE EXPENSES/TRANSFERS -->
+        <!-- Chart and Category Section -->
         {% if totals %}
         <div class="row">
-            <!-- Chart Section -->
             <div class="col-lg-8 col-12 mb-3 mb-lg-0">
                 <div class="chart-container">
                     <h5 class="mb-3">
@@ -452,7 +486,6 @@
                 </div>
             </div>
 
-            <!-- Category Summary -->
             <div class="col-lg-4 col-12">
                 <div class="card h-100">
                     <div class="card-header">
@@ -480,14 +513,12 @@
         {% endif %}
     </div>
 
-    <!-- Footer -->
     <footer class="mt-5 py-4 bg-light">
         <div class="container text-center">
             <p class="mb-0">LifeTracker &copy; 2023 - Expense Tracking Made Simple</p>
         </div>
     </footer>
 
-    <!-- Chart.js Script - ONLY LOAD IF THERE ARE EXPENSES/TRANSFERS -->
     {% if totals %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

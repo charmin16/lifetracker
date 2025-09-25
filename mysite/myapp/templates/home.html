@@ -16,13 +16,14 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 16px; /* Increased base font size */
+      font-size: 22px; /* Significantly larger base font size */
+      line-height: 1.7; /* Better line spacing for readability */
     }
 
     .container {
-      max-width: 1200px; /* Increased from default 1140px */
-      padding-left: 15px;
-      padding-right: 15px;
+      max-width: 1200px;
+      padding-left: 25px; /* More side padding */
+      padding-right: 25px;
     }
 
     .main-card {
@@ -37,49 +38,49 @@
       background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
       color: white;
       border-radius: 15px;
-      padding: 30px; /* Increased padding */
-      margin: 25px 0;
+      padding: 40px; /* More padding */
+      margin: 35px 0;
     }
 
     .transaction-flow {
       background: #f8f9fa;
       border-radius: 10px;
-      padding: 20px; /* Increased padding */
-      margin: 20px 0;
+      padding: 30px; /* More padding */
+      margin: 30px 0;
     }
 
     .flow-step {
       display: flex;
       align-items: center;
-      margin: 12px 0;
-      padding: 15px; /* Increased padding */
+      margin: 20px 0;
+      padding: 22px; /* More padding */
       background: white;
       border-radius: 8px;
       border-left: 4px solid var(--primary-color);
-      font-size: 1.05rem; /* Larger font */
+      font-size: 1.3rem; /* Larger font */
     }
 
     .step-icon {
-      width: 45px; /* Slightly larger */
-      height: 45px;
+      width: 60px; /* Larger */
+      height: 60px;
       background: var(--primary-color);
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 15px;
+      margin-right: 20px;
       flex-shrink: 0;
-      font-size: 1.2rem; /* Larger icon text */
+      font-size: 1.6rem; /* Larger icon text */
     }
 
     .transaction-type {
       border-left: 4px solid;
-      padding: 20px; /* Increased padding */
-      margin: 18px 0;
+      padding: 30px; /* More padding */
+      margin: 25px 0;
       background: #f8f9fa;
       border-radius: 8px;
-      font-size: 1.05rem; /* Larger font */
+      font-size: 1.3rem; /* Larger font */
     }
 
     .credit { border-color: #28a745; background: #f8fff9; }
@@ -88,89 +89,130 @@
     .expense { border-color: #dc3545; background: #fff5f5; }
 
     .money-flow {
-      font-size: 1.4rem; /* Larger font */
+      font-size: 2rem; /* Larger font */
       font-weight: bold;
       text-align: center;
-      margin: 12px 0;
-      padding: 12px;
+      margin: 20px 0;
+      padding: 20px;
       background: #e8f4ff;
       border-radius: 8px;
     }
 
-    /* Larger text sizes throughout */
-    h2 { font-size: 2.2rem; } /* Increased from ~1.8rem */
-    h4 { font-size: 1.8rem; } /* Increased */
-    h5 { font-size: 1.5rem; } /* Increased */
-    h6 { font-size: 1.3rem; } /* Increased */
+    /* Even larger text sizes throughout */
+    h2 { font-size: 3.2rem; } /* Much larger */
+    h4 { font-size: 2.5rem; } /* Larger */
+    h5 { font-size: 2.2rem; } /* Larger */
+    h6 { font-size: 1.8rem; } /* Larger */
 
-    .lead { font-size: 1.25rem; } /* Larger lead text */
+    .lead {
+      font-size: 1.6rem; /* Larger lead text */
+      line-height: 1.7; /* Better readability */
+    }
 
     .btn-lg {
-      font-size: 1.1rem; /* Larger button text */
-      padding: 14px 30px;
+      font-size: 1.5rem; /* Larger button text */
+      padding: 18px 40px;
     }
 
     .badge {
-      font-size: 0.9rem; /* Slightly larger badges */
-      padding: 8px 12px;
+      font-size: 1.2rem; /* Larger badges */
+      padding: 12px 18px;
+    }
+
+    /* Make all text more readable */
+    p, li, span, small {
+      font-size: 1.3rem; /* Larger base text */
+      line-height: 1.7; /* Better spacing */
+    }
+
+    .alert {
+      font-size: 1.3rem; /* Larger alert text */
     }
 
     /* Better spacing for mobile */
     @media (max-width: 768px) {
       .container {
         max-width: 100%;
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
       }
 
       body {
-        font-size: 15px;
-        padding: 10px;
+        font-size: 20px; /* Still large on mobile */
+        padding: 20px;
       }
 
-      h2 { font-size: 1.8rem; }
-      h4 { font-size: 1.5rem; }
-      h5 { font-size: 1.3rem; }
+      h2 { font-size: 2.5rem; }
+      h4 { font-size: 2.2rem; }
+      h5 { font-size: 2rem; }
 
       .main-card .card-body {
-        padding: 25px 20px;
+        padding: 35px 30px;
       }
 
       .wallet-system {
+        padding: 30px;
+        margin: 30px 0;
+      }
+
+      .transaction-type {
+        padding: 25px;
+        font-size: 1.2rem;
+      }
+
+      .flow-step {
         padding: 20px;
-        margin: 20px 0;
+        font-size: 1.2rem;
       }
     }
 
     @media (max-width: 576px) {
       body {
-        font-size: 14px;
-        padding: 5px;
+        font-size: 18px;
+        padding: 15px;
       }
 
       .container {
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 15px;
+        padding-right: 15px;
       }
 
       .main-card .card-body {
-        padding: 20px 15px;
+        padding: 30px 25px;
       }
 
-      h2 { font-size: 1.6rem; }
-      h4 { font-size: 1.4rem; }
+      h2 { font-size: 2.2rem; }
+      h4 { font-size: 2rem; }
+      h5 { font-size: 1.8rem; }
+
+      /* Ensure buttons are still large */
+      .btn-lg {
+        font-size: 1.3rem;
+        padding: 16px 30px;
+      }
+    }
+
+    /* Extra large screens */
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 1300px;
+      }
+
+      body {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container py-4"> <!-- Reduced vertical padding to use space better -->
+  <div class="container py-5"> <!-- Increased padding for better spacing -->
     <!-- Header Card -->
-    <div class="card main-card mb-4">
-      <div class="card-body text-center p-4"> <!-- Reduced padding -->
-        <div class="mb-4">
-          <i class="bi bi-wallet2 display-1 text-primary mb-3"></i>
+    <div class="card main-card mb-5"> <!-- More margin -->
+      <div class="card-body text-center p-5"> <!-- More padding -->
+        <div class="mb-5"> <!-- More margin -->
+          <i class="bi bi-wallet2 display-1 text-primary mb-4"></i> <!-- Larger icon margin -->
           <h2 class="text-primary">Welcome to Expense Tracker, <strong>{{ user.username|title }}</strong>! 👋</h2>
-          <p class="text-muted lead">Smart money management with automatic wallet & bank balance tracking</p>
+          <p class="text-muted lead mt-3">Smart money management with automatic wallet & bank balance tracking</p>
         </div>
 
         <!-- Quick Actions -->
@@ -191,54 +233,54 @@
 
     <!-- Wallet System Explanation -->
     <div class="card main-card">
-      <div class="card-body p-4"> <!-- Reduced padding -->
-        <h4 class="text-center mb-4"><i class="bi bi-lightbulb me-2"></i>How Your Money Flow Works</h4>
+      <div class="card-body p-5"> <!-- More padding -->
+        <h4 class="text-center mb-5"><i class="bi bi-lightbulb me-2"></i>How Your Money Flow Works</h4>
 
         <!-- Dual Balance System -->
         <div class="wallet-system">
-          <h5 class="text-center mb-3"><i class="bi bi-wallet me-2"></i>Two-Balance System: Wallet & Bank</h5>
+          <h5 class="text-center mb-4"><i class="bi bi-wallet me-2"></i>Two-Balance System: Wallet & Bank</h5>
           <div class="row text-center">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-4">
               <div class="display-6">💰</div>
               <h6>Wallet Balance</h6>
-              <p class="mb-1">Physical cash in your pocket</p>
+              <p class="mb-2">Physical cash in your pocket</p>
               <small>Comes from ATM withdrawals</small>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-4">
               <div class="display-6">🏦</div>
               <h6>Bank Balance</h6>
-              <p class="mb-1">Money in your bank account</p>
+              <p class="mb-2">Money in your bank account</p>
               <small>From income/deposits</small>
             </div>
           </div>
         </div>
 
         <!-- Transaction Types Explained -->
-        <div class="mt-4">
+        <div class="mt-5">
           <h5><i class="bi bi-arrow-left-right me-2"></i>Transaction Types Explained</h5>
 
           <div class="transaction-type credit">
             <h6 class="text-success"><i class="bi bi-arrow-down-circle me-2"></i>Credit - Money Coming In</h6>
-            <p class="mb-2"><strong>Purpose:</strong> Record any money entering your bank account</p>
-            <p class="mb-1"><strong>Examples:</strong> Salary, Business Income, Deposits, Gifts</p>
-            <p class="mb-1"><strong>Effect:</strong> Increases your <strong>Bank Balance</strong> only</p>
+            <p class="mb-3"><strong>Purpose:</strong> Record any money entering your bank account</p>
+            <p class="mb-2"><strong>Examples:</strong> Salary, Business Income, Deposits, Gifts</p>
+            <p class="mb-2"><strong>Effect:</strong> Increases your <strong>Bank Balance</strong> only</p>
             <span class="badge bg-success">No Category • Notes Field Available</span>
           </div>
 
           <div class="transaction-type withdrawal">
             <h6 class="text-warning"><i class="bi bi-cash-coin me-2"></i>Withdrawal - Getting Cash</h6>
-            <p class="mb-2"><strong>Purpose:</strong> When you take cash out from your bank account</p>
-            <p class="mb-1"><strong>Examples:</strong> ATM withdrawals, Bank counter withdrawals</p>
-            <p class="mb-1"><strong>Effect:</strong> Decreases <strong>Bank Balance</strong>, Increases <strong>Cash Balance</strong></p>
+            <p class="mb-3"><strong>Purpose:</strong> When you take cash out from your bank account</p>
+            <p class="mb-2"><strong>Examples:</strong> ATM withdrawals, Bank counter withdrawals</p>
+            <p class="mb-2"><strong>Effect:</strong> Decreases <strong>Bank Balance</strong>, Increases <strong>Cash Balance</strong></p>
             <span class="badge bg-warning text-dark">No Category • Notes Field Available</span>
           </div>
 
           <div class="transaction-type expense">
             <h6 class="text-danger"><i class="bi bi-cart me-2"></i>Expense - Spending Money</h6>
-            <p class="mb-2"><strong>Purpose:</strong> Record any money you spend</p>
-            <p class="mb-1"><strong>Examples:</strong> Shopping, Food, Bills, Transportation</p>
-            <p class="mb-1"><strong>Smart Spending Logic:</strong></p>
-            <ul class="mb-1">
+            <p class="mb-3"><strong>Purpose:</strong> Record any money you spend</p>
+            <p class="mb-2"><strong>Examples:</strong> Shopping, Food, Bills, Transportation</p>
+            <p class="mb-2"><strong>Smart Spending Logic:</strong></p>
+            <ul class="mb-2">
               <li>💰 <strong>Uses Wallet first</strong> - Spends from your cash balance if available</li>
               <li>🏦 <strong>Then uses Bank</strong> - If cash balance is empty, spends from bank account</li>
             </ul>
@@ -247,15 +289,15 @@
 
           <div class="transaction-type transfer">
             <h6 class="text-info"><i class="bi bi-arrow-left-right me-2"></i>Transfer - Moving Money</h6>
-            <p class="mb-2"><strong>Purpose:</strong> Moving money between accounts or digital transfers</p>
-            <p class="mb-1"><strong>Examples:</strong> Bank transfers, Online payments, Account transfers</p>
-            <p class="mb-1"><strong>Effect:</strong> Decreases <strong>Bank Balance</strong> directly</p>
+            <p class="mb-3"><strong>Purpose:</strong> Moving money between accounts or digital transfers</p>
+            <p class="mb-2"><strong>Examples:</strong> Bank transfers, Online payments, Account transfers</p>
+            <p class="mb-2"><strong>Effect:</strong> Decreases <strong>Bank Balance</strong> directly</p>
             <span class="badge bg-info">Category Required • Notes Available</span>
           </div>
         </div>
 
         <!-- Real-Life Example -->
-        <div class="transaction-flow mt-4">
+        <div class="transaction-flow mt-5">
           <h5><i class="bi bi-diagram-3 me-2"></i>Real-Life Example</h5>
 
           <div class="flow-step">
@@ -298,7 +340,7 @@
         </div>
 
         <!-- Key Rules -->
-        <div class="alert alert-info mt-4" style="font-size: 1.05rem;"> <!-- Larger alert text -->
+        <div class="alert alert-info mt-5">
           <h6><i class="bi bi-shield-check me-2"></i>Smart Protection Rules</h6>
           <ul class="mb-0">
             <li>❌ <strong>No overdrafts allowed</strong> - You can't spend more than you have</li>
@@ -309,9 +351,9 @@
         </div>
 
         <!-- Quick Start -->
-        <div class="text-center mt-4">
+        <div class="text-center mt-5">
           <h5>Ready to Start?</h5>
-          <p class="text-muted" style="font-size: 1.1rem;">Begin by adding your first transaction below</p>
+          <p class="text-muted">Begin by adding your first transaction below</p>
           <div class="btn-group" role="group">
             <a href="{% url 'create-expense' %}" class="btn btn-success btn-lg">
               <i class="bi bi-plus-circle me-2"></i>Add First Transaction
