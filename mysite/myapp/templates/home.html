@@ -16,6 +16,13 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 16px; /* Increased base font size */
+    }
+
+    .container {
+      max-width: 1200px; /* Increased from default 1140px */
+      padding-left: 15px;
+      padding-right: 15px;
     }
 
     .main-card {
@@ -30,30 +37,31 @@
       background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
       color: white;
       border-radius: 15px;
-      padding: 25px;
-      margin: 20px 0;
+      padding: 30px; /* Increased padding */
+      margin: 25px 0;
     }
 
     .transaction-flow {
       background: #f8f9fa;
       border-radius: 10px;
-      padding: 15px;
-      margin: 15px 0;
+      padding: 20px; /* Increased padding */
+      margin: 20px 0;
     }
 
     .flow-step {
       display: flex;
       align-items: center;
-      margin: 10px 0;
-      padding: 10px;
+      margin: 12px 0;
+      padding: 15px; /* Increased padding */
       background: white;
       border-radius: 8px;
       border-left: 4px solid var(--primary-color);
+      font-size: 1.05rem; /* Larger font */
     }
 
     .step-icon {
-      width: 40px;
-      height: 40px;
+      width: 45px; /* Slightly larger */
+      height: 45px;
       background: var(--primary-color);
       color: white;
       border-radius: 50%;
@@ -62,14 +70,16 @@
       justify-content: center;
       margin-right: 15px;
       flex-shrink: 0;
+      font-size: 1.2rem; /* Larger icon text */
     }
 
     .transaction-type {
       border-left: 4px solid;
-      padding: 15px;
-      margin: 15px 0;
+      padding: 20px; /* Increased padding */
+      margin: 18px 0;
       background: #f8f9fa;
       border-radius: 8px;
+      font-size: 1.05rem; /* Larger font */
     }
 
     .credit { border-color: #28a745; background: #f8fff9; }
@@ -78,21 +88,85 @@
     .expense { border-color: #dc3545; background: #fff5f5; }
 
     .money-flow {
-      font-size: 1.2em;
+      font-size: 1.4rem; /* Larger font */
       font-weight: bold;
       text-align: center;
-      margin: 10px 0;
-      padding: 10px;
+      margin: 12px 0;
+      padding: 12px;
       background: #e8f4ff;
       border-radius: 8px;
+    }
+
+    /* Larger text sizes throughout */
+    h2 { font-size: 2.2rem; } /* Increased from ~1.8rem */
+    h4 { font-size: 1.8rem; } /* Increased */
+    h5 { font-size: 1.5rem; } /* Increased */
+    h6 { font-size: 1.3rem; } /* Increased */
+
+    .lead { font-size: 1.25rem; } /* Larger lead text */
+
+    .btn-lg {
+      font-size: 1.1rem; /* Larger button text */
+      padding: 14px 30px;
+    }
+
+    .badge {
+      font-size: 0.9rem; /* Slightly larger badges */
+      padding: 8px 12px;
+    }
+
+    /* Better spacing for mobile */
+    @media (max-width: 768px) {
+      .container {
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      body {
+        font-size: 15px;
+        padding: 10px;
+      }
+
+      h2 { font-size: 1.8rem; }
+      h4 { font-size: 1.5rem; }
+      h5 { font-size: 1.3rem; }
+
+      .main-card .card-body {
+        padding: 25px 20px;
+      }
+
+      .wallet-system {
+        padding: 20px;
+        margin: 20px 0;
+      }
+    }
+
+    @media (max-width: 576px) {
+      body {
+        font-size: 14px;
+        padding: 5px;
+      }
+
+      .container {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      .main-card .card-body {
+        padding: 20px 15px;
+      }
+
+      h2 { font-size: 1.6rem; }
+      h4 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
+  <div class="container py-4"> <!-- Reduced vertical padding to use space better -->
     <!-- Header Card -->
     <div class="card main-card mb-4">
-      <div class="card-body text-center p-5">
+      <div class="card-body text-center p-4"> <!-- Reduced padding -->
         <div class="mb-4">
           <i class="bi bi-wallet2 display-1 text-primary mb-3"></i>
           <h2 class="text-primary">Welcome to Expense Tracker, <strong>{{ user.username|title }}</strong>! 👋</h2>
@@ -117,7 +191,7 @@
 
     <!-- Wallet System Explanation -->
     <div class="card main-card">
-      <div class="card-body p-4">
+      <div class="card-body p-4"> <!-- Reduced padding -->
         <h4 class="text-center mb-4"><i class="bi bi-lightbulb me-2"></i>How Your Money Flow Works</h4>
 
         <!-- Dual Balance System -->
@@ -224,7 +298,7 @@
         </div>
 
         <!-- Key Rules -->
-        <div class="alert alert-info mt-4">
+        <div class="alert alert-info mt-4" style="font-size: 1.05rem;"> <!-- Larger alert text -->
           <h6><i class="bi bi-shield-check me-2"></i>Smart Protection Rules</h6>
           <ul class="mb-0">
             <li>❌ <strong>No overdrafts allowed</strong> - You can't spend more than you have</li>
@@ -237,7 +311,7 @@
         <!-- Quick Start -->
         <div class="text-center mt-4">
           <h5>Ready to Start?</h5>
-          <p class="text-muted">Begin by adding your first transaction below</p>
+          <p class="text-muted" style="font-size: 1.1rem;">Begin by adding your first transaction below</p>
           <div class="btn-group" role="group">
             <a href="{% url 'create-expense' %}" class="btn btn-success btn-lg">
               <i class="bi bi-plus-circle me-2"></i>Add First Transaction

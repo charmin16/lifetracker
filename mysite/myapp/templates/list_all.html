@@ -44,7 +44,13 @@
 
         .table-responsive {
             border-radius: 8px;
-            overflow: hidden;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        .table {
+            min-width: 800px; /* Force table to be wide enough for all columns */
+            width: 100%;
         }
 
         .table th {
@@ -52,11 +58,13 @@
             color: var(--secondary-color);
             font-weight: 600;
             padding: 12px 15px;
+            white-space: nowrap; /* Prevent header text wrapping */
         }
 
         .table td {
             padding: 12px 15px;
             vertical-align: middle;
+            white-space: nowrap; /* Prevent cell content wrapping */
         }
 
         .table-hover tbody tr:hover {
@@ -166,37 +174,65 @@
             margin-bottom: 15px;
         }
 
+        /* Mobile landscape suggestion */
+        .mobile-landscape-alert {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mobile-landscape-alert i {
+            font-size: 24px;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
             .table-responsive {
                 font-size: 14px;
+                position: relative;
             }
 
             .table th, .table td {
-                padding: 8px 10px;
+                padding: 10px 12px;
+                font-size: 13px; /* Slightly smaller font for mobile */
+            }
+
+            .mobile-landscape-alert {
+                display: block; /* Show landscape suggestion on mobile */
             }
 
             .filter-form {
                 margin-bottom: 15px;
             }
 
-            /* Mobile: Chart first, then categories */
-            .mobile-order-1 {
-                order: 1;
+            /* Hide some less important columns on very small screens */
+            @media (max-width: 576px) {
+                .table th:nth-child(4), /* Category */
+                .table td:nth-child(4),
+                .table th:nth-child(8), /* Notes */
+                .table td:nth-child(8) {
+                    display: none;
+                }
             }
 
-            .mobile-order-2 {
-                order: 2;
+            @media (max-width: 400px) {
+                .table th:nth-child(3), /* Item/Service */
+                .table td:nth-child(3) {
+                    display: none;
+                }
             }
+        }
 
-            .filter-section .card-body {
-                background-color: #f8f9fa;
-                border-radius: 8px;
+        @media (min-width: 769px) {
+            .mobile-landscape-alert {
+                display: none; /* Hide landscape suggestion on desktop */
             }
-
-            .filter-active {
-                border-left: 4px solid #0d6efd;
-                padding: 10px 15px;
-}
         }
     </style>
 </head>
@@ -243,6 +279,13 @@
             </a>
         </div>
 
+        <!-- Mobile Landscape Alert -->
+        <div class="mobile-landscape-alert">
+            <i class="bi bi-phone-landscape"></i>
+            <h6 class="mb-2">Tip: Switch to Landscape</h6>
+            <p class="mb-0 small">Rotate your phone sideways to see all table columns more comfortably.</p>
+        </div>
+
         <!-- Filter Section -->
         <div class="filter-section mb-4">
             <!-- Toggle Button -->
@@ -250,8 +293,8 @@
                 <i class="bi bi-funnel"></i> Show/Hide Filters
             </button>
 
-            <button class="btn btn-outline-primary d-none d-md-inline-block mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
-                <i class="bi bi-funnel"></i> Filters
+            <button class="btn btn-outline-primary d-none d-md-inline-block mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                <i class="bi bi-funnel"></i> Show Filters
             </button>
 
             {% if request.GET.month or request.GET.year or request.GET.days %}
@@ -271,7 +314,7 @@
             {% endif %}
 
             <!-- Collapsible Filter Content -->
-            <div class="collapse show" id="filterCollapse">
+            <div class="collapse" id="filterCollapse">
                 <div class="card card-body">
                     <div class="row">
                         <div class="col-12 col-md-4 mb-3">
@@ -387,11 +430,11 @@
             </div>
         </div>
 
-        <!-- Chart and Category Section -->
-        {% if expenses|length > 0 %}
+        <!-- Chart and Category Section - ONLY SHOW IF THERE ARE EXPENSES/TRANSFERS -->
+        {% if totals %}
         <div class="row">
-            <!-- Chart Section - Mobile first, Desktop second -->
-            <div class="col-lg-8 col-12 mobile-order-1 mb-3 mb-lg-0">
+            <!-- Chart Section -->
+            <div class="col-lg-8 col-12 mb-3 mb-lg-0">
                 <div class="chart-container">
                     <h5 class="mb-3">
                         <i class="bi bi-graph-up me-2"></i>
@@ -409,8 +452,8 @@
                 </div>
             </div>
 
-            <!-- Category Summary - Mobile second, Desktop first -->
-            <div class="col-lg-4 col-12 mobile-order-2">
+            <!-- Category Summary -->
+            <div class="col-lg-4 col-12">
                 <div class="card h-100">
                     <div class="card-header">
                         <i class="bi bi-bar-chart me-2"></i>Spending by Category
@@ -444,15 +487,14 @@
         </div>
     </footer>
 
-    <!-- Chart.js Script -->
-    {% if expenses|length > 0 %}
+    <!-- Chart.js Script - ONLY LOAD IF THERE ARE EXPENSES/TRANSFERS -->
+    {% if totals %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('expenseChart');
         const categories = {{ categories|safe }};
         const amounts = {{ amounts|safe }};
 
-        // Generate a color for each category
         const generateColors = (count) => {
             const colors = ['#4361ee', '#3a0ca3', '#7209b7', '#4cc9f0', '#f72585', '#4895ef', '#560bad'];
             return colors.slice(0, count);

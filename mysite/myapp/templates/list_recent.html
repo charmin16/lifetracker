@@ -169,37 +169,35 @@
 </head>
 <body>
     <!-- Navigation -->
-    <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="bi bi-speedometer2"></i> LifeTracker
-        </a>
-        <div class="d-flex">
-            <div class="dropdown me-2">
-                <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-grid"></i> Features
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'list-expenses' %}">
-                        <i class="bi bi-wallet2 me-2"></i>Expense Tracker
-                    </a></li>
-                    <li><a class="dropdown-item" href="{% url 'create_idea' %}">
-                        <i class="bi bi-bullseye me-2"></i>Vision Board
-                    </a></li>
-                </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-speedometer2"></i> LifeTracker
+            </a>
+            <div class="d-flex">
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-grid"></i> Features
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'list-expenses' %}">
+                            <i class="bi bi-wallet2 me-2"></i>Expense Tracker
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'create_idea' %}">
+                            <i class="bi bi-bullseye me-2"></i>Vision Board
+                        </a></li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="{% url 'logout' %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
             </div>
-
-            <form method="POST" action="{% url 'logout' %}" class="d-inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
-            </form>
         </div>
-    </div>
-</nav>
-
+    </nav>
 
     <div class="container mt-4">
         <!-- Header -->
@@ -280,8 +278,9 @@
             </div>
         </div>
 
-
-
+        <!-- Chart Section - ONLY SHOWS WHEN THERE ARE EXPENSES/TRANSFERS -->
+        {% if totals %}
+        <div class="row">
             <!-- Chart Container -->
             <div class="col-md-6">
                 <div class="chart-container">
@@ -289,10 +288,8 @@
                     <canvas id="expenseChart" height="250"></canvas>
                 </div>
             </div>
-        <br>
-         <!-- Category Summary -->
-        {% if totals %}
-        <div class="row">
+
+            <!-- Category Summary -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
@@ -313,11 +310,18 @@
                                 </div>
                             </div>
                         {% endfor %}
-
                     </div>
                 </div>
             </div>
-
+        </div>
+        {% else %}
+        <!-- Show message when no expense/transfer data exists -->
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-bar-chart" style="font-size: 48px; color: #adb5bd;"></i>
+                <h5 class="mt-2">No Spending Data Yet</h5>
+                <p class="text-muted">Add some expenses or transfers to see charts and category breakdowns</p>
+            </div>
         </div>
         {% endif %}
 
@@ -330,8 +334,8 @@
         </div>
     </footer>
 
-    <!-- Chart.js Script -->
-    {% if expenses|length > 0 %}
+    <!-- Chart.js Script - ONLY LOADS WHEN THERE ARE EXPENSES/TRANSFERS -->
+    {% if totals %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('expenseChart');
