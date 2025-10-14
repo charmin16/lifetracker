@@ -16,5 +16,5 @@ urlpatterns = [
     path('delete-idea/<int:pk>', views.DeleteIdea.as_view(), name='delete_idea'),
     path('update_idea/<int:pk>', views.update_idea, name='update_idea'),
     path('mark-done/<int:idea_id>', views.mark_done, name='mark_done'),
-    path('emergency-admin/', views.create_admin_view, name='emergency_admin'),
+    path('emergency-admin/', views.create_admin_view, name='emergency_admin')
 ]

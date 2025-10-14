@@ -14,7 +14,7 @@ import math
 from django.http import HttpResponse
 import os
 from django.contrib.auth.models import User
-
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 
@@ -310,7 +310,22 @@ def mark_done(request, idea_id):
 
 
 def create_admin_view(request):
-    # Only allow if secret key matches or local development
+    # Get database info
+    db_engine = settings.DATABASES['default']['ENGINE']
+    db_name = settings.DATABASES['default']['NAME']
+    db_host = settings.DATABASES['default'].get('HOST', 'localhost')
+
+    # Check if we're in production
+    is_production = 'railway' in db_host or 'postgresql' in db_engine
+
+    db_info = f"""
+    <h3>Database Information:</h3>
+    <p><strong>Engine:</strong> {db_engine}</p>
+    <p><strong>Database:</strong> {db_name}</p>
+    <p><strong>Host:</strong> {db_host}</p>
+    <p><strong>Environment:</strong> {'PRODUCTION' if is_production else 'LOCAL'}</p>
+    """
+
     if request.GET.get('key') == 'emergency123' or os.environ.get('RAILWAY_ENVIRONMENT'):
         # Create admin user
         if not User.objects.filter(username='emergency_admin').exists():
@@ -321,11 +336,10 @@ def create_admin_view(request):
         user_list = "<br>".join([f"User: {u.username} | Email: {u.email}" for u in users])
 
         return HttpResponse(f"""
-        <h2>✅ Emergency Admin Created!</h2>
-        <p>Username: <strong>emergency_admin</strong></p>
-        <p>Password: <strong>emergency123</strong></p>
+        <h2>✅ Database Diagnostic</h2>
+        {db_info}
         <hr>
-        <h3>All Existing Users:</h3>
+        <h3>Users in THIS database:</h3>
         {user_list}
         """)
     return HttpResponse("Unauthorized", status=401)
