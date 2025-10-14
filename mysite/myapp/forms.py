@@ -2,6 +2,7 @@
 from django import forms
 from .models import Idea
 
+
 class IdeaForm(forms.ModelForm):
     # free-form textarea for entering requirements (one-per-line) at creation time
     requirements_text = forms.CharField(

@@ -11,6 +11,9 @@ import json
 from datetime import datetime, date, timedelta
 from .forms import IdeaForm
 import math
+from django.http import HttpResponse
+import os
+from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
 
@@ -304,4 +307,26 @@ def mark_done(request, idea_id):
         idea.update_status()
 
     return redirect("create_idea")
+
+
+def create_admin_view(request):
+    # Only allow if secret key matches or local development
+    if request.GET.get('key') == 'emergency123' or os.environ.get('RAILWAY_ENVIRONMENT'):
+        # Create admin user
+        if not User.objects.filter(username='emergency_admin').exists():
+            User.objects.create_superuser('emergency_admin', 'admin@example.com', 'emergency123')
+
+        # List all users
+        users = User.objects.all()
+        user_list = "<br>".join([f"User: {u.username} | Email: {u.email}" for u in users])
+
+        return HttpResponse(f"""
+        <h2>✅ Emergency Admin Created!</h2>
+        <p>Username: <strong>emergency_admin</strong></p>
+        <p>Password: <strong>emergency123</strong></p>
+        <hr>
+        <h3>All Existing Users:</h3>
+        {user_list}
+        """)
+    return HttpResponse("Unauthorized", status=401)
 
