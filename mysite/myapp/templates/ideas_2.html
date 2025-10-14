@@ -340,7 +340,9 @@
                         <div class="progress-container">
                             <div class="idea-content">
                                 <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
-                                    <h4 class="mb-0">{{ idea.title }}</h4>
+                                    <h4 class="mb-0" style="font-size: 1.4rem; font-weight: 500; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 8px 16px; border-radius: 8px; display: inline-block; letter-spacing: 1.5px;">
+    {{ idea.title }}
+</h4>
                                     <span class="status-badge status-{{ idea.status|slugify }} mt-2 mt-md-0">{{ idea.status }}</span>
                                 </div>
 

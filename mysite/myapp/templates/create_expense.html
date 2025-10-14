@@ -173,7 +173,7 @@
             <div class="alert alert-warning">
             Please correct the errors below.
             </div>
-             {% endif %}
+            {% endif %}
 
             <div class="form-card">
                 <div class="form-group">
@@ -272,7 +272,7 @@
             categoryField.classList.remove("visible");
             categoryField.classList.add("hidden");
 
-            // Update help text
+            // Update help text and show appropriate fields
             if (value === "") {
                 transactionHelp.textContent = "Select a transaction type to see available fields";
             } else if (value === "Credit") {
@@ -283,28 +283,8 @@
                     noteField.classList.remove("hidden");
                     noteField.classList.add("visible");
                 }, 10);
-            } else if (value === "Withdrawal") {
-                transactionHelp.textContent = "Withdrawal: Cash withdrawn from your account";
-                setTimeout(() => {
-                    amountField.classList.remove("hidden");
-                    amountField.classList.add("visible");
-                    noteField.classList.remove("hidden");
-                    noteField.classList.add("visible");
-                }, 10);
-            } else if (value === "Transfer") {
-                transactionHelp.textContent = "Transfer: Money moved between accounts";
-                setTimeout(() => {
-                    amountField.classList.remove("hidden");
-                    amountField.classList.add("visible");
-                    noteField.classList.remove("hidden");
-                    noteField.classList.add("visible");
-                    itemServiceField.classList.remove("hidden");
-                    itemServiceField.classList.add("visible");
-                    categoryField.classList.remove("hidden");
-                    categoryField.classList.add("visible");
-                }, 10);
-            } else if (value === "Expense") {
-                transactionHelp.textContent = "Expense: Money spent on goods or services";
+            } else if (value === "Transfer/Expense") {
+                transactionHelp.textContent = "Transfer/Expense: Money spent or transferred from your account";
                 setTimeout(() => {
                     amountField.classList.remove("hidden");
                     amountField.classList.add("visible");

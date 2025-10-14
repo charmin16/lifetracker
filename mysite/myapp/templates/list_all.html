@@ -182,6 +182,35 @@
             margin-bottom: 15px;
         }
 
+        /* Pagination Styles */
+        .pagination-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-link {
+            color: var(--primary-color);
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+        }
+
+        .page-link:hover {
+            color: white;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+
         /* Mobile landscape hint - HIDDEN ON DESKTOP */
         .mobile-landscape-hint {
             display: none;
@@ -390,7 +419,13 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-table me-2"></i>All Transactions</span>
-                <span class="badge bg-primary">{{ expenses|length }} records</span>
+                <span class="badge bg-primary">
+                    {% if is_paginated %}
+                        {{ page_obj.paginator.count }} total
+                    {% else %}
+                        {{ expenses|length }} records
+                    {% endif %}
+                </span>
             </div>
             <div class="card-body p-0">
                 {% if expenses|length == 0 %}
@@ -419,8 +454,7 @@
                                     <th>Category</th>
                                     <th>Amount</th>
                                     <th>Bank Balance</th>
-                                    <th>Cash Balance</th>
-                                    <th>Notes</th> <!-- NOTES COLUMN IS HERE -->
+                                    <th>Notes</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -430,12 +464,8 @@
                                     <td>
                                         {% if item.transaction_type == 'Credit' %}
                                             <span class="transaction-credit">{{ item.transaction_type }}</span>
-                                        {% elif item.transaction_type == 'Expense' %}
+                                        {% elif item.transaction_type == 'Transfer/Expense' %}
                                             <span class="transaction-expense">{{ item.transaction_type }}</span>
-                                        {% elif item.transaction_type == 'Transfer' %}
-                                            <span class="transaction-transfer">{{ item.transaction_type }}</span>
-                                        {% elif item.transaction_type == 'Withdrawal' %}
-                                            <span class="transaction-withdrawal">{{ item.transaction_type }}</span>
                                         {% else %}
                                             {{ item.transaction_type }}
                                         {% endif %}
@@ -444,18 +474,15 @@
                                     <td>{{ item.category }}</td>
                                     <td class="{% if item.transaction_type == 'Credit' %}amount-positive{% else %}amount-negative{% endif %}">
                                         {% if item.transaction_type == 'Credit' %}
-                                            +{{ item.amount }}
+                                            +{{ item.amount|floatformat:2 }}
                                         {% else %}
-                                            -{{ item.amount }}
+                                            -{{ item.amount|floatformat:2 }}
                                         {% endif %}
                                     </td>
                                     <td class="{% if item.bank_balance < 0 %}balance-negative{% else %}balance-positive{% endif %}">
-                                        {{ item.bank_balance }}
+                                        {{ item.bank_balance|floatformat:2 }}
                                     </td>
-                                    <td class="{% if item.cash_balance < 0 %}balance-negative{% else %}balance-positive{% endif %}">
-                                        {{ item.cash_balance }}
-                                    </td>
-                                    <td>{{ item.note }}</td> <!-- NOTES DATA IS HERE -->
+                                    <td>{{ item.note }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -464,6 +491,82 @@
                 {% endif %}
             </div>
         </div>
+
+        <!-- Balance Alert -->
+        {% if expenses|length > 0 %}
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle"></i>
+            Showing newest transactions first.
+            <strong>Current Balance: {{ final_balance|floatformat:2 }}</strong>
+        </div>
+        {% endif %}
+
+        <!-- Pagination Controls -->
+        {% if is_paginated %}
+        <div class="pagination-container mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                    Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} transactions
+                </div>
+
+                <nav aria-label="Expense pagination">
+                    <ul class="pagination mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;&laquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;&raquo;</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Chart and Category Section -->
         {% if totals %}
@@ -495,7 +598,7 @@
                         {% for row in totals %}
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ row.category }}</span>
-                                <span class="fw-bold">{{ row.total_amount }}</span>
+                                <span class="fw-bold">₦{{ row.total_amount|floatformat:2 }}</span>
                             </div>
                             <div class="progress mb-3" style="height: 8px;">
                                 <div class="progress-bar" role="progressbar"

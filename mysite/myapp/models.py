@@ -5,9 +5,7 @@ from django.utils.safestring import mark_safe
 
 TRANSACTION_TYPE = (
     ('Credit', 'Credit'),
-    ('Withdrawal', 'Withdrawal'),
-    ('Transfer', 'Transfer'),
-    ('Expense', 'Expense')
+    ('Transfer/Expense', 'Transfer/Expense')
 )
 
 CATEGORY = (

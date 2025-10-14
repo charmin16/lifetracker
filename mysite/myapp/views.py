@@ -61,32 +61,13 @@ class CreateExpense(CreateView, LoginRequiredMixin):
         for expense in user_expenses:
             if expense.transaction_type == 'Credit':
                 bank_balance += expense.amount
-            elif expense.transaction_type == 'Withdrawal':
+            elif expense.transaction_type == 'Transfer/Expense':
                 bank_balance -= expense.amount
-                cash_balance += expense.amount
-            elif expense.transaction_type == 'Transfer':
-                bank_balance -= expense.amount
-            elif expense.transaction_type == 'Expense':
-                # Expenses first use cash, then bank balance
-                if cash_balance >= expense.amount:
-                    cash_balance -= expense.amount
-                else:
-                    bank_balance -= expense.amount
 
         # Check if transaction exceeds available funds
-        if transaction_type in ['Withdrawal', 'Transfer']:
+        if transaction_type == 'Transfer/Expense':
             if amount > bank_balance:
                 form.add_error('amount', f'Insufficient bank balance. Current balance: ₦{bank_balance:,.2f}')
-                return self.form_invalid(form)
-
-        elif transaction_type == 'Expense':
-            total_available = cash_balance + bank_balance
-            if amount > total_available:
-                form.add_error('amount',
-                               f'Insufficient funds for this expense. '
-                               f'Cash: ₦{cash_balance:,.2f}, Bank: ₦{bank_balance:,.2f}, '
-                               f'Total Available: ₦{total_available:,.2f}'
-                               )
                 return self.form_invalid(form)
 
         # If validation passes, save the expense
@@ -97,28 +78,28 @@ class CreateExpense(CreateView, LoginRequiredMixin):
 class ListAllExpense(ListView, LoginRequiredMixin):
     model = Expense
     template_name = 'list_all.html'
-    ordering = ['-date']
-    # paginate_by = 8
+    ordering = ['-date', '-id']  # NEWEST first
+    paginate_by = 12  # Show 10 transactions per page
     context_object_name = 'expenses'
 
     def get_queryset(self):
-        qs = Expense.objects.filter(user=self.request.user).order_by('-date')
+        qs = Expense.objects.filter(user=self.request.user).order_by('-date', '-id')
 
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
         days = self.request.GET.get("days")
 
-        if month:  # example: "August 2025"
+        if month:
             try:
-                parsed = datetime.strptime(month.strip(), "%B %Y")  # expects "August 2025"
+                parsed = datetime.strptime(month.strip(), "%B %Y")
                 qs = qs.filter(date__year=parsed.year, date__month=parsed.month)
             except ValueError:
-                pass  # ignore invalid input
+                pass
 
-        elif year:  # only year filter
+        elif year:
             qs = qs.filter(date__year=year)
 
-        elif days:  # last N days
+        elif days:
             try:
                 cutoff = now().date() - timedelta(days=int(days))
                 qs = qs.filter(date__gte=cutoff)
@@ -131,57 +112,36 @@ class ListAllExpense(ListView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
         expenses = context['expenses']
 
-        cash = 0
-        balance = 0
-        for expense in expenses:
+        # FIXED: Calculate the CURRENT balance from ALL transactions
+        all_expenses = Expense.objects.filter(user=self.request.user).order_by('date', 'id')
+        current_balance = 0
+
+        # Calculate actual current balance (from oldest to newest)
+        for expense in all_expenses:
             if expense.transaction_type == 'Credit':
-                balance += expense.amount
-            elif expense.transaction_type == 'Withdrawal':
-                balance -= expense.amount
-                cash += expense.amount
-            elif expense.transaction_type == 'Transfer':
-                balance -= expense.amount
-            elif expense.transaction_type == 'Expense':
-                if cash >= expense.amount:
-                    cash -= expense.amount  # spend from cash
-                else:
-                    balance -= expense.amount  # spend directly from balance
+                current_balance += expense.amount
+            elif expense.transaction_type == 'Transfer/Expense':
+                current_balance -= expense.amount
 
-            expense.bank_balance = balance
-            expense.cash_balance = cash
+        # For newest-first display, we need to work BACKWARDS from current balance
+        # Start with the current balance and subtract each transaction to show balance BEFORE that transaction
+        running_balance = current_balance
 
+        for expense in expenses:
+            # Show the balance BEFORE this transaction occurred
+            expense.bank_balance = running_balance
+
+            # Then subtract this transaction to get balance for the next (older) transaction
+            if expense.transaction_type == 'Credit':
+                running_balance -= expense.amount
+            elif expense.transaction_type == 'Transfer/Expense':
+                running_balance += expense.amount
+
+        context["final_balance"] = current_balance
+
+        # Chart data (from ALL expenses)
         totals = (
-            expenses.filter(user=self.request.user, transaction_type__in=['Expense', 'Transfer'])
-            .exclude(category="")  # skip blank categories
-            .values("category")
-            .annotate(total_amount=Sum("amount"))
-            .order_by("-total_amount")
-        )
-
-        # Build plain Python lists for Chart.js
-        categories = [t["category"] for t in totals]
-        amounts = [float(t["total_amount"]) for t in totals]  # make sure it's JSON-serializable
-
-        context["totals"] = totals
-        context["categories"] = json.dumps(categories)
-        context["amounts"] = json.dumps(amounts)
-        return context
-
-
-class ListRecentExpense(ListView, LoginRequiredMixin):
-    model = Expense
-    template_name = 'list_recent.html'
-    context_object_name = 'expenses'
-
-    def get_queryset(self):
-        # Show only the last 5 added (most recent insertions)
-        return Expense.objects.filter(user=self.request.user).order_by('-id')[:5]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        totals = (
-            Expense.objects.filter(user=self.request.user, transaction_type__in=['Expense', 'Transfer'])
+            Expense.objects.filter(user=self.request.user, transaction_type='Transfer/Expense')
             .exclude(category="")
             .values("category")
             .annotate(total_amount=Sum("amount"))
@@ -196,6 +156,51 @@ class ListRecentExpense(ListView, LoginRequiredMixin):
         context["amounts"] = json.dumps(amounts)
         return context
 
+
+class ListRecentExpense(ListView, LoginRequiredMixin):
+    model = Expense
+    template_name = 'list_recent.html'
+    context_object_name = 'expenses'
+
+    def get_queryset(self):
+        # Get the 5 most recent transactions, then order them oldest first for balance display
+        recent_expenses = Expense.objects.filter(user=self.request.user).order_by('-date', '-id')[:5]
+        # Convert to list and reverse to show oldest first (for proper balance calculation)
+        ordered_expenses = list(reversed(recent_expenses))
+        return ordered_expenses
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        expenses = context['expenses']
+
+        # Calculate running balance (oldest first)
+        balance = 0
+        for expense in expenses:
+            if expense.transaction_type == 'Credit':
+                balance += expense.amount
+            elif expense.transaction_type == 'Transfer/Expense':
+                balance -= expense.amount
+            expense.bank_balance = balance
+
+        # Add final balance to context
+        context["final_balance"] = balance
+
+        # Chart data
+        totals = (
+            Expense.objects.filter(user=self.request.user, transaction_type='Transfer/Expense')
+            .exclude(category="")
+            .values("category")
+            .annotate(total_amount=Sum("amount"))
+            .order_by("-total_amount")
+        )
+
+        categories = [t["category"] for t in totals]
+        amounts = [float(t["total_amount"]) for t in totals]
+
+        context["totals"] = totals
+        context["categories"] = json.dumps(categories)
+        context["amounts"] = json.dumps(amounts)
+        return context
 
 @login_required
 def create_idea(request):
@@ -309,7 +314,7 @@ def mark_done(request, idea_id):
     return redirect("create_idea")
 
 
-def create_admin_view(request):
+'''def create_admin_view(request):
     # Get database info
     db_engine = settings.DATABASES['default']['ENGINE']
     db_name = settings.DATABASES['default']['NAME']
@@ -343,4 +348,4 @@ def create_admin_view(request):
         {user_list}
         """)
     return HttpResponse("Unauthorized", status=401)
-
+'''
