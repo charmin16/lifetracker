@@ -1,5 +1,5 @@
 import os
-# import dj_database_url
+import dj_database_url
 from pathlib import Path
 
 """
@@ -160,26 +160,35 @@ if 'RAILWAY_STATIC_URL' in os.environ:
     SESSION_COOKIE_SECURE = True
 
 # Postgres
-'''# Railway production settings
-if 'RAILWAY_STATIC_URL' in os.environ:
+# VERCEL SETTINGS
+if 'VERCEL' in os.environ or 'DATABASE_URL' in os.environ:
     DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
     SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 
     ALLOWED_HOSTS = [
-        'lifetracker-production-8be8.up.railway.app',
-        '.railway.app',  # This allows all Railway subdomains
+        '.vercel.app',
+        '.now.sh',
         'localhost',
         '127.0.0.1'
     ]
 
-    # Database configuration
+    # Use PostgreSQL from DATABASE_URL (Vercel provides this)
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE'),
-            'USER': os.environ.get('PGUSER'),
-            'PASSWORD': os.environ.get('PGPASSWORD'),
-            'HOST': os.environ.get('PGHOST'),
-            'PORT': os.environ.get('PGPORT'),
-        }
-    }'''
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+
+    # CSRF settings for Vercel
+    CSRF_TRUSTED_ORIGINS = [
+        'https://*.vercel.app',
+        'https://*.now.sh'
+    ]
+
+    # Secure cookies in production
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+    print("✅ Vercel production settings loaded")
