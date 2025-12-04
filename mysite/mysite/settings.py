@@ -192,3 +192,5 @@ if 'VERCEL' in os.environ or 'DATABASE_URL' in os.environ:
     SESSION_COOKIE_SECURE = True
 
     print("✅ Vercel production settings loaded")
+
+
