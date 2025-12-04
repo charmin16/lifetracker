@@ -193,4 +193,18 @@ if 'VERCEL' in os.environ or 'DATABASE_URL' in os.environ:
 
     print("✅ Vercel production settings loaded")
 
+# Vercel deployment fix
+
+if 'VERCEL' in os.environ:
+    # Ensure static files work
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_URL = '/static/'
+
+    # Debug info
+    print("=" * 50)
+    print("Vercel deployment detected")
+    print(f"BASE_DIR: {BASE_DIR}")
+    print(f"WSGI_APPLICATION: {WSGI_APPLICATION}")
+    print("=" * 50)
+
 
